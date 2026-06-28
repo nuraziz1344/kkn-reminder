@@ -20,8 +20,11 @@ import (
 // newClient builds a whatsmeow client backed by a persistent SQLite session.
 // On the first run there is no stored session, so the caller must handle QR login.
 func newClient(ctx context.Context) (*whatsmeow.Client, error) {
+	if err := os.MkdirAll("data", 0700); err != nil {
+		return nil, fmt.Errorf("buat direktori data: %w", err)
+	}
 	dbLog := waLog.Stdout("Database", "ERROR", true)
-	container, err := sqlstore.New(ctx, "sqlite3", "file:session.db?_foreign_keys=on", dbLog)
+	container, err := sqlstore.New(ctx, "sqlite3", "file:data/session.db?_foreign_keys=on", dbLog)
 	if err != nil {
 		return nil, fmt.Errorf("buka session store: %w", err)
 	}

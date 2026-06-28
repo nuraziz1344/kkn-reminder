@@ -1,0 +1,9 @@
+services:
+  kkn:
+    build: .
+    restart: unless-stopped
+    volumes:
+      - ./config.json:/app/config.json:ro
+      - ./data:/app/data
+    stdin_open: true
+    tty: true

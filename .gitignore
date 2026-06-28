@@ -2,6 +2,7 @@
 session.db
 session.db-shm
 session.db-wal
+/data/
 
 # config holds your group JID
 config.json
