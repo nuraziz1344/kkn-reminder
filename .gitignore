@@ -1,0 +1,10 @@
+# whatsmeow session (contains login credentials — never commit)
+session.db
+session.db-shm
+session.db-wal
+
+# config holds your group JID
+config.json
+
+# compiled binary
+/KKN
