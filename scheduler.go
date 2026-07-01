@@ -55,5 +55,9 @@ func buildMessage(base string, duty *DutySchedule, now time.Time, dayOffset int)
 	if block == "" {
 		return base
 	}
-	return base + "\n\n" + block
+	label := "📋 *Piket Hari Ini:*"
+	if dayOffset != 0 {
+		label = "📋 *Piket Besok:*"
+	}
+	return base + "\n\n" + label + "\n" + block
 }
