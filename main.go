@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"go.mau.fi/whatsmeow/types"
 	"go.mau.fi/whatsmeow/types/events"
@@ -59,9 +60,17 @@ func main() {
 		os.Exit(1)
 	}
 
+	duty, err := LoadDutySchedule(cfg.CookSchedule, cfg.CleanSchedule)
+	if err != nil {
+		fmt.Println("⚠️  Jadwal piket tidak dapat dibaca:", err)
+		duty = nil
+	}
+
 	// -test: send one reminder immediately, then exit.
 	if *testFlag {
-		if err := sendReminder(ctx, client, groupJID, cfg.Message, tracker); err != nil {
+		loc, _ := time.LoadLocation(cfg.Timezone)
+		msg := buildMessage(cfg.Message, duty, time.Now().In(loc), 0)
+		if err := sendReminder(ctx, client, groupJID, msg, tracker); err != nil {
 			fmt.Println("Error:", err)
 			os.Exit(1)
 		}
@@ -88,7 +97,7 @@ func main() {
 		}
 	})
 
-	cronRunner, err := startScheduler(ctx, client, groupJID, cfg, tracker)
+	cronRunner, err := startScheduler(ctx, client, groupJID, cfg, tracker, duty)
 	if err != nil {
 		fmt.Println("Error penjadwal:", err)
 		os.Exit(1)
